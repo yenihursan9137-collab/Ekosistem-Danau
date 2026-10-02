@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPI IPAS Kelas V - Interaksi Ekosistem Danau Limboto</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bioGreen: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            700: '#15803d',
+                            800: '#166534'
+                        },
+                        abioBlue: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            700: '#0369a1',
+                            800: '#075985'
+                        },
+                        earthSoil: {
+                            500: '#d97706',
+                            700: '#b45309',
+                            800: '#78350f'
+                        },
+                        sunYellow: {
+                            400: '#facc15',
+                            500: '#eab308'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Styles for Interactive Visuals */
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f8f5;
+        }
+
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .tab-btn.active {
+            background-color: #15803d;
+            color: white;
+            box-shadow: 0 4px 12px rgba(21, 128, 61, 0.3);
+        }
+
+        .drop-zone-highlight {
+            border-color: #22c55e !important;
+            background-color: #dcfce7 !important;
+        }
+
+        .draggable-item {
+            touch-action: none;
+            user-select: none;
+            cursor: grab;
+        }
+
+        .draggable-item:active {
+            cursor: grabbing;
+        }
+
+        /* Ecosystem Canvas Overlay Effects */
+        .lake-polluted {
+            filter: sepia(0.4) hue-rotate(40deg) contrast(0.9);
+        }
+
+        .lake-healthy {
+            filter: none;
+        }
+
+        /* Pulse Animations for Energy Flow */
+        @keyframes flowPulse {
+            0% { stroke-dashoffset: 20; }
+            100% { stroke-dashoffset: 0; }
+        }
+
+        .energy-arrow {
+            stroke-dasharray: 6;
+            animation: flowPulse 1s linear infinite;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+
+    <!-- HEADER BRANDING KANWIL KEMENAG GORONTALO & MIN 2 KAB. GORONTALO -->
+    <header class="bg-gradient-to-r from-bioGreen-800 via-bioGreen-700 to-abioBlue-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center p-1 shadow-inner shrink-0">
+                    <!-- SVG Emblem Madrasah -->
+                    <svg viewBox="0 0 100 100" class="w-full h-full">
+                        <circle cx="50" cy="50" r="45" fill="#15803d"/>
+                        <path d="M50 15 L80 35 L80 75 L50 95 L20 75 L20 35 Z" fill="#eab308"/>
+                        <text x="50" y="58" font-size="28" font-weight="bold" fill="#ffffff" text-anchor="middle">MI</text>
+                    </svg>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold bg-amber-400 text-slate-900 px-2 py-0.5 rounded-full uppercase tracking-wider">Kanwil Kemenag Prov. Gorontalo</span>
+                    <h1 class="text-lg md:text-xl font-bold leading-tight">MPI IPAS Interaktif: Ekosistem Danau Limboto</h1>
+                    <p class="text-xs text-bioGreen-100">Fase C / Kelas V • MIN 2 Kabupaten Gorontalo (Kel. Hepuhulawa, Limboto)</p>
+                </div>
+            </div>
+
+            <!-- AUDIO MUTE TOGGLE, BADGE INDICATOR & DEVELOPER PROFILE -->
+            <div class="flex flex-wrap items-center gap-3">
+                <!-- PROFIL PENGEMBANG (HEADER BADGE) -->
+                <div class="flex items-center gap-2.5 bg-white/10 backdrop-blur px-3 py-1.5 rounded-xl border border-white/20 shadow-sm">
+                    <img src="https://iili.io/na4xdSS.jpg" alt="YENI HURSAN, S.Pd.SD" class="w-10 h-10 rounded-full object-cover border-2 border-amber-400 shadow shrink-0" onerror="this.src='https://placehold.co/100x100/15803d/ffffff?text=YH'">
+                    <div class="text-left leading-tight">
+                        <span class="block text-[9px] text-amber-300 font-bold uppercase tracking-wider">Pengembang MPI</span>
+                        <span class="font-bold text-white text-xs block">YENI HURSAN, S.Pd.SD</span>
+                    </div>
+                </div>
+
+                <button id="soundToggleBtn" onclick="toggleSound()" class="bg-white/20 hover:bg-white/30 text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
+                    <span id="soundIcon">🔊</span> <span id="soundStatusText">Suara: On</span>
+                </button>
+                <div class="bg-amber-500/30 border border-amber-300 text-amber-100 text-xs px-3 py-1.5 rounded-lg flex items-center gap-1">
+                    <span>🏆 Lencana:</span>
+                    <span id="badgeDisplay" class="font-bold text-white">Pemula Ekosistem</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULAR NAVIGATION TABS -->
+        <nav class="bg-bioGreen-800/80 backdrop-blur border-t border-bioGreen-700">
+            <div class="max-w-7xl mx-auto px-4 flex overflow-x-auto space-x-2 py-2 no-scrollbar">
+                <button onclick="switchTab('tab-materi')" id="btn-tab-materi" class="tab-btn active px-4 py-2 rounded-lg text-sm font-semibold transition shrink-0 flex items-center gap-2">
+                    📖 <span>1. Konsep & Materi</span>
+                </button>
+                <button onclick="switchTab('tab-simulasi')" id="btn-tab-simulasi" class="tab-btn px-4 py-2 bg-bioGreen-700/50 hover:bg-bioGreen-700 text-white rounded-lg text-sm font-semibold transition shrink-0 flex items-center gap-2">
+                    🧪 <span>2. Lab Ekosistem Limboto</span>
+                </button>
+                <button onclick="switchTab('tab-game')" id="btn-tab-game" class="tab-btn px-4 py-2 bg-bioGreen-700/50 hover:bg-bioGreen-700 text-white rounded-lg text-sm font-semibold transition shrink-0 flex items-center gap-2">
+                    🧩 <span>3. Game Interaktif Drag & Drop</span>
+                </button>
+                <button onclick="switchTab('tab-kuis')" id="btn-tab-kuis" class="tab-btn px-4 py-2 bg-bioGreen-700/50 hover:bg-bioGreen-700 text-white rounded-lg text-sm font-semibold transition shrink-0 flex items-center gap-2">
+                    📝 <span>4. Evaluasi & Kuis</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- ================= MODUL 1: MATERI & KONSEP ================= -->
+        <section id="tab-materi" class="space-y-6">
+            <!-- PENGANTAR LOKAL GORONTALO -->
+            <div class="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
+                <div class="relative z-10 max-w-3xl">
+                    <span class="bg-amber-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Konteks Lingkungan Madrasah</span>
+                    <h2 class="text-2xl md:text-3xl font-bold mt-2">Menjelajah Ekosistem Danau Limboto</h2>
+                    <p class="mt-2 text-sm md:text-base text-emerald-50 leading-relaxed">
+                        Anak-anak kelas V MIN 2 Kabupaten Gorontalo, tahukah kalian? Madrasah kita terletak tidak jauh dari kawasan <strong>Danau Limboto</strong>. Di sana terjadi hubungan saling memengaruhi antara makhluk hidup (biotik) seperti ikan Manggabai, eceng gondok, dan burung rawa, dengan benda tak hidup (abiotik) seperti air danau, tanah, udara, dan cahaya matahari!
+                    </p>
+                </div>
+                <div class="absolute -right-6 -bottom-6 opacity-20 pointer-events-none">
+                    <svg class="w-64 h-64 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                </div>
+            </div>
+
+            <!-- DEFINISI EKOSISTEM & DUA KOMPONEN UTAMA (SIDE-BY-SIDE) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- KOMPONEN BIOTIK CARD -->
+                <div class="bg-white rounded-2xl border-2 border-bioGreen-500 shadow-sm overflow-hidden flex flex-col">
+                    <div class="bg-bioGreen-700 text-white px-5 py-4 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">🌱</span>
+                            <h3 class="text-xl font-bold">Komponen BIOTIK</h3>
+                        </div>
+                        <span class="text-xs bg-bioGreen-800 text-bioGreen-100 px-2.5 py-1 rounded-full">Makhluk Hidup</span>
+                    </div>
+                    <div class="p-5 space-y-4 flex-grow">
+                        <p class="text-sm text-slate-600">Seluruh makhluk hidup yang tinggal dan beraktivitas dalam ekosistem. Dibagi menjadi 3 peran utama:</p>
+                        
+                        <div class="space-y-3">
+                            <div class="p-3 bg-bioGreen-50 rounded-xl border border-bioGreen-100 flex items-start gap-3">
+                                <span class="text-2xl">🌿</span>
+                                <div>
+                                    <h4 class="font-bold text-bioGreen-800 text-sm">1. Produsen (Pembuat Makanan)</h4>
+                                    <p class="text-xs text-slate-600 mt-0.5">Organisme yang bisa membuat makanan sendiri lewat fotosintesis.<br><em>Contoh Danau Limboto: Eceng gondok, teratai, alga/fitoplankton.</em></p>
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-bioGreen-50 rounded-xl border border-bioGreen-100 flex items-start gap-3">
+                                <span class="text-2xl">🐟</span>
+                                <div>
+                                    <h4 class="font-bold text-bioGreen-800 text-sm">2. Konsumen (Pemakan)</h4>
+                                    <p class="text-xs text-slate-600 mt-0.5">Memakan organisme lain untuk energi.<br>
+                                    • <strong>Primer (Herbivora):</strong> Ikan kecil, ulat, belalang.<br>
+                                    • <strong>Sekunder (Karnivora):</strong> Ikan Manggabai, katak.<br>
+                                    • <strong>Tersier (Puncak):</strong> Burung Elang, Burung Kuntul Rawa.</p>
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-bioGreen-50 rounded-xl border border-bioGreen-100 flex items-start gap-3">
+                                <span class="text-2xl">🍄</span>
+                                <div>
+                                    <h4 class="font-bold text-bioGreen-800 text-sm">3. Dekomposer (Pengurai)</h4>
+                                    <p class="text-xs text-slate-600 mt-0.5">Menguraikan bangkai & sisa makhluk hidup menjadi hara bagi tanah/air.<br><em>Contoh: Bakteri pengurai, jamur, cacing lumpur.</em></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KOMPONEN ABIOTIK CARD -->
+                <div class="bg-white rounded-2xl border-2 border-abioBlue-500 shadow-sm overflow-hidden flex flex-col">
+                    <div class="bg-abioBlue-700 text-white px-5 py-4 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">☀️</span>
+                            <h3 class="text-xl font-bold">Komponen ABIOTIK</h3>
+                        </div>
+                        <span class="text-xs bg-abioBlue-800 text-abioBlue-100 px-2.5 py-1 rounded-full">Benda Tak Hidup</span>
+                    </div>
+                    <div class="p-5 space-y-3 flex-grow">
+                        <p class="text-sm text-slate-600">Unsur-unsur fisik & kimia non-hayati yang menyediakan kondisi hidup bagi makhluk hidup:</p>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="p-3 bg-abioBlue-50 rounded-xl border border-abioBlue-100">
+                                <span class="text-xl">☀️</span>
+                                <h4 class="font-bold text-abioBlue-800 text-sm mt-1">Cahaya Matahari</h4>
+                                <p class="text-xs text-slate-600">Sumber energi utama untuk fotosintesis tumbuhan.</p>
+                            </div>
+                            <div class="p-3 bg-abioBlue-50 rounded-xl border border-abioBlue-100">
+                                <span class="text-xl">💧</span>
+                                <h4 class="font-bold text-abioBlue-800 text-sm mt-1">Air Danau</h4>
+                                <p class="text-xs text-slate-600">Tempat hidup ikan & bahan metabolisme utama.</p>
+                            </div>
+                            <div class="p-3 bg-abioBlue-50 rounded-xl border border-abioBlue-100">
+                                <span class="text-xl">💨</span>
+                                <h4 class="font-bold text-abioBlue-800 text-sm mt-1">Udara / Oksigen</h4>
+                                <p class="text-xs text-slate-600">O2 untuk bernapas, CO2 untuk fotosintesis.</p>
+                            </div>
+                            <div class="p-3 bg-abioBlue-50 rounded-xl border border-abioBlue-100">
+                                <span class="text-xl">🪴</span>
+                                <h4 class="font-bold text-abioBlue-800 text-sm mt-1">Tanah & Nutrisi</h4>
+                                <p class="text-xs text-slate-600">Tempat berpijak & penyedia zat hara/mineral.</p>
+                            </div>
+                            <div class="p-3 bg-abioBlue-50 rounded-xl border border-abioBlue-100 col-span-2">
+                                <span class="text-xl">🌡️</span>
+                                <h4 class="font-bold text-abioBlue-800 text-sm mt-1">Suhu & Udara Limboto</h4>
+                                <p class="text-xs text-slate-600">Mengatur aktivitas bergerak dan tumbuh organisme air.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERAKSI: BIOTIK - ABIOTIK & SIMBIOSIS -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+                <div class="border-b border-slate-200 pb-3">
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                        <span>🔄</span> Bentuk Interaksi dalam Ekosistem
+                    </h3>
+                    <p class="text-sm text-slate-600">Bagaimana komponen biotik dan abiotik saling memengaruhi secara terus-menerus.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- SIMBIOSIS MUTUALISME -->
+                    <div class="bg-amber-50 rounded-xl p-4 border border-amber-200">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="p-2 bg-amber-200 rounded-lg text-lg">🤝</span>
+                            <h4 class="font-bold text-amber-900">Simbiosis Mutualisme</h4>
+                        </div>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            Hubungan <strong>saling menguntungkan</strong> kedua pihak.<br>
+                            <em>Contoh: Kupu-kupu/lebah dengan bunga eceng gondok (kupu-kupu dapat nektar, bunga terbantu penyerbukan).</em>
+                        </p>
+                    </div>
+
+                    <!-- SIMBIOSIS PARASITISME -->
+                    <div class="bg-rose-50 rounded-xl p-4 border border-rose-200">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="p-2 bg-rose-200 rounded-lg text-lg">🦟</span>
+                            <h4 class="font-bold text-rose-900">Simbiosis Parasitisme</h4>
+                        </div>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            Satu pihak <strong>untung</strong>, pihak lain <strong>dirugikan</strong>.<br>
+                            <em>Contoh: Cacing parasit pada tubuh ikan Danau Limboto (cacing hisap nutrisi, ikan menjadi sakit).</em>
+                        </p>
+                    </div>
+
+                    <!-- SIMBIOSIS KOMENSALISME -->
+                    <div class="bg-sky-50 rounded-xl p-4 border border-sky-200">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="p-2 bg-sky-200 rounded-lg text-lg">🌿</span>
+                            <h4 class="font-bold text-sky-900">Simbiosis Komensalisme</h4>
+                        </div>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            Satu pihak <strong>untung</strong>, pihak lain <strong>tidak dirugikan/diuntungkan</strong>.<br>
+                            <em>Contoh: Tumbuhan paku menempel di batang pohon peneduh Limboto tanpa menyerap makanan pohon.</em>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- DIAGRAM INFOGRAFIS ALIRAN ENERGI -->
+                <div class="bg-gradient-to-r from-bioGreen-50 via-emerald-50 to-abioBlue-50 p-5 rounded-xl border border-bioGreen-200">
+                    <h4 class="font-bold text-bioGreen-800 text-sm mb-3 flex items-center gap-2">
+                        ⚡ Siklus Aliran Energi Danau Limboto
+                    </h4>
+                    <div class="flex flex-wrap items-center justify-around gap-2 text-center text-xs">
+                        <div class="bg-white p-3 rounded-xl shadow-sm border border-amber-300">
+                            <div class="text-2xl mb-1">☀️</div>
+                            <span class="font-bold text-amber-700">Matahari (Abiotik)</span>
+                        </div>
+                        <span class="text-amber-500 font-bold text-lg">➔</span>
+                        <div class="bg-white p-3 rounded-xl shadow-sm border border-bioGreen-300">
+                            <div class="text-2xl mb-1">🌿</div>
+                            <span class="font-bold text-bioGreen-700">Eceng Gondok (Produsen)</span>
+                        </div>
+                        <span class="text-bioGreen-500 font-bold text-lg">➔</span>
+                        <div class="bg-white p-3 rounded-xl shadow-sm border border-emerald-300">
+                            <div class="text-2xl mb-1">🐟</div>
+                            <span class="font-bold text-emerald-700">Ikan Kecil (Konsumen I)</span>
+                        </div>
+                        <span class="text-emerald-500 font-bold text-lg">➔</span>
+                        <div class="bg-white p-3 rounded-xl shadow-sm border border-teal-300">
+                            <div class="text-2xl mb-1">🦅</div>
+                            <span class="font-bold text-teal-700">Burung Rawa (Konsumen II)</span>
+                        </div>
+                        <span class="text-teal-500 font-bold text-lg">➔</span>
+                        <div class="bg-white p-3 rounded-xl shadow-sm border border-slate-300">
+                            <div class="text-2xl mb-1">🦠</div>
+                            <span class="font-bold text-slate-700">Bakteri (Pengurai)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MODUL 2: LAB SIMULASI EKOSISTEM DANAU LIMBOTO ================= -->
+        <section id="tab-simulasi" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                    <div>
+                        <span class="text-xs bg-abioBlue-100 text-abioBlue-800 font-bold px-2.5 py-1 rounded-full uppercase">Lab Interaktif</span>
+                        <h2 class="text-2xl font-bold text-slate-800 mt-1">Simulasi Keseimbangan Ekosistem Danau Limboto</h2>
+                        <p class="text-sm text-slate-600">Geser slider faktor abiotik di bawah untuk melihat respons makhluk hidup di dalam danau secara langsung!</p>
+                    </div>
+                    <button onclick="resetSimulation()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-4 py-2 rounded-lg font-semibold transition self-start md:self-auto">
+                        🔄 Reset Simulasi
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                    <!-- CONTROLS PANEL -->
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-6">
+                        <h3 class="font-bold text-slate-800 border-b pb-2 flex items-center gap-2">
+                            🎛️ Manipulasi Variabel Abiotik
+                        </h3>
+
+                        <!-- SLIDER 1: CAHAYA MATAHARI -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs font-semibold">
+                                <label for="sunlightSlider" class="text-amber-800 flex items-center gap-1">
+                                    ☀️ Intensitas Cahaya Matahari
+                                </label>
+                                <span id="sunlightVal" class="text-amber-600">70%</span>
+                            </div>
+                            <input type="range" id="sunlightSlider" min="10" max="100" value="70" oninput="updateSimulation()" class="w-full accent-amber-500 cursor-pointer">
+                            <p class="text-[11px] text-slate-500">Matahari dibutuhkan tumbuhan & eceng gondok untuk fotosintesis.</p>
+                        </div>
+
+                        <!-- SLIDER 2: KUALITAS AIR / PENCEMARAN LIMBAH -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs font-semibold">
+                                <label for="pollutionSlider" class="text-rose-800 flex items-center gap-1">
+                                    🧪 Tingkat Limbah / Pendangkalan
+                                </label>
+                                <span id="pollutionVal" class="text-rose-600">20%</span>
+                            </div>
+                            <input type="range" id="pollutionSlider" min="0" max="100" value="20" oninput="updateSimulation()" class="w-full accent-rose-500 cursor-pointer">
+                            <p class="text-[11px] text-slate-500">Sisa pembuangan limbah rumah tangga & pupuk memicu gulma eceng gondok.</p>
+                        </div>
+
+                        <!-- SLIDER 3: SUHU AIR DANAU -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs font-semibold">
+                                <label for="tempSlider" class="text-sky-800 flex items-center gap-1">
+                                    🌡️ Suhu Air Danau Limboto
+                                </label>
+                                <span id="tempVal" class="text-sky-600">28°C</span>
+                            </div>
+                            <input type="range" id="tempSlider" min="15" max="42" value="28" oninput="updateSimulation()" class="w-full accent-sky-500 cursor-pointer">
+                            <p class="text-[11px] text-slate-500">Suhu ideal Danau Limboto (26°C - 30°C) menjaga populasi ikan tetap sehat.</p>
+                        </div>
+
+                        <div class="p-3 bg-bioGreen-50 border border-bioGreen-200 rounded-xl">
+                            <h4 class="text-xs font-bold text-bioGreen-800">💡 Petunjuk Guru Madrasah:</h4>
+                            <p class="text-[11px] text-bioGreen-900 mt-1">Coba naikkan limbah ke 90%! Amati apa yang terjadi pada populasi Ikan Manggabai akibat tutupan eceng gondok berlebih (eutrofikasi).</p>
+                        </div>
+                    </div>
+
+                    <!-- VISUAL CANVAS SIMULATOR -->
+                    <div class="lg:col-span-2 flex flex-col space-y-4">
+                        <div id="lakeCanvasContainer" class="relative w-full h-80 rounded-2xl border-4 border-teal-700 bg-gradient-to-b from-sky-300 via-teal-200 to-teal-800 overflow-hidden shadow-inner transition-all duration-500">
+                            
+                            <!-- SUN VISUAL -->
+                            <div id="simSun" class="absolute top-3 right-4 w-16 h-16 bg-amber-400 rounded-full blur-xs shadow-[0_0_30px_rgba(250,204,21,0.8)] transition-all duration-300 flex items-center justify-center text-2xl">
+                                ☀
+                            </div>
+
+                            <!-- WATER SURFACE & ECENG GONDOK (PRODUSEN) -->
+                            <div class="absolute top-12 left-0 right-0 h-8 flex items-center justify-around px-2 z-10 transition-all duration-500">
+                                <div id="plantGroup" class="flex items-center gap-2 transition-all duration-500">
+                                    <!-- Dynamic weed SVGs generated by JS -->
+                                </div>
+                            </div>
+
+                            <!-- UNDERWATER FISH (KONSUMEN) -->
+                            <div id="underwaterZone" class="absolute inset-0 pt-20 px-6 flex flex-col justify-around">
+                                <div id="fishGroup" class="flex justify-around items-center transition-all duration-500">
+                                    <!-- Dynamic fish items -->
+                                </div>
+                            </div>
+
+                            <!-- OXYGEN BUBBLES VISUAL -->
+                            <div id="bubbleGroup" class="absolute inset-0 pointer-events-none"></div>
+
+                            <!-- ECOSYSTEM STATUS OVERLAY BADGE -->
+                            <div class="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur text-white text-xs px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-2">
+                                <span id="statusDot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                                <span id="statusText" class="font-bold">Ekosistem Seimbang & Subur</span>
+                            </div>
+                        </div>
+
+                        <!-- INFERENCE & PEDAGOGICAL FEEDBACK PANEL (SEBAB-AKIBAT) -->
+                        <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200 space-y-2">
+                            <h4 class="font-bold text-amber-900 text-sm flex items-center gap-2">
+                                🧠 Analisis Umpan Balik Edukatif (Sebab - Akibat):
+                            </h4>
+                            <p id="inferenceFeedback" class="text-xs text-slate-700 leading-relaxed">
+                                Cahaya matahari dan suhu air berada pada tingkat optimal. Eceng gondok tumbuh terkendali dan ikan Manggabai mendapatkan cukup Oksigen terlarut (DO) untuk bernapas dengan baik.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MODUL 3: GAME INTERAKTIF DRAG & DROP ================= -->
+        <section id="tab-game" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="border-b border-slate-200 pb-4 mb-6">
+                    <span class="text-xs bg-bioGreen-100 text-bioGreen-800 font-bold px-2.5 py-1 rounded-full uppercase">Aktivitas Kinestetik</span>
+                    <h2 class="text-2xl font-bold text-slate-800 mt-1">Zona Olah Kata & Rantai Makanan Interaktif</h2>
+                    <p class="text-sm text-slate-600">Kelompokkan komponen di bawah ini dengan menekan/menggeser tombol ke wadah yang tepat!</p>
+                </div>
+
+                <!-- SUB-GAME 1: PILIH BIOTIK VS ABIOTIK -->
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                        🎮 Tantangan 1: Pisahkan Komponen Biotik & Abiotik
+                    </h3>
+
+                    <!-- ITEMS CONTAINER TO PICK FROM -->
+                    <div id="draggableItemsPool" class="flex flex-wrap gap-2.5 p-4 bg-slate-100 rounded-2xl border border-dashed border-slate-300 min-h-[80px]">
+                        <!-- Dynamically filled with interactive items -->
+                    </div>
+
+                    <!-- TWO TARGET DROP ZONES SIDE-BY-SIDE -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- BIOTIK DROP ZONE -->
+                        <div id="zoneBiotik" class="drop-zone bg-bioGreen-50/60 border-2 border-dashed border-bioGreen-400 rounded-2xl p-4 min-h-[160px] transition flex flex-col justify-between">
+                            <div>
+                                <h4 class="font-bold text-bioGreen-800 text-sm flex items-center gap-2">
+                                    🌱 Kelompok BIOTIK (Makhluk Hidup)
+                                </h4>
+                                <div id="containerBiotik" class="flex flex-wrap gap-2 mt-3"></div>
+                            </div>
+                            <span class="text-[11px] text-bioGreen-600 mt-2 block italic text-right">Target Komponen Biotik</span>
+                        </div>
+
+                        <!-- ABIOTIK DROP ZONE -->
+                        <div id="zoneAbiotik" class="drop-zone bg-abioBlue-50/60 border-2 border-dashed border-abioBlue-400 rounded-2xl p-4 min-h-[160px] transition flex flex-col justify-between">
+                            <div>
+                                <h4 class="font-bold text-abioBlue-800 text-sm flex items-center gap-2">
+                                    ☀ Kelompok ABIOTIK (Benda Tak Hidup)
+                                </h4>
+                                <div id="containerAbiotik" class="flex flex-wrap gap-2 mt-3"></div>
+                            </div>
+                            <span class="text-[11px] text-abioBlue-600 mt-2 block italic text-right">Target Komponen Abiotik</span>
+                        </div>
+                    </div>
+
+                    <div id="dragGameFeedback" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+                </div>
+
+                <hr class="my-6 border-slate-200">
+
+                <!-- SUB-GAME 2: RANTAI MAKANAN BUILDER -->
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                        🔗 Tantangan 2: Susun Urutan Rantai Makanan Danau Limboto
+                    </h3>
+                    <p class="text-xs text-slate-600">Klik urutan organisme dari Produsen hingga Pengurai di bawah ini agar membentuk rantai makanan yang utuh!</p>
+
+                    <div class="flex flex-wrap items-center justify-center gap-2 bg-slate-50 p-4 rounded-2xl border border-slate-200 min-h-[70px]" id="foodChainSlots">
+                        <div class="text-xs text-slate-400">Pilih organisme di bawah ini secara berurutan...</div>
+                    </div>
+
+                    <div id="chainOptions" class="flex flex-wrap gap-3 justify-center">
+                        <!-- Chain cards populated by JS -->
+                    </div>
+
+                    <div class="flex justify-center gap-3">
+                        <button onclick="checkFoodChain()" class="bg-bioGreen-700 hover:bg-bioGreen-800 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow transition">
+                            ✅ Periksa Rantai Makanan
+                        </button>
+                        <button onclick="resetFoodChain()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs px-4 py-2.5 rounded-xl transition">
+                            🔄 Ulangi Rantai
+                        </button>
+                    </div>
+
+                    <div id="chainFeedback" class="hidden p-3 rounded-xl text-xs font-semibold text-center"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MODUL 4: EVALUASI & KUIS INTERAKTIF ================= -->
+        <section id="tab-kuis" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <!-- QUIZ HEADER -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                    <div>
+                        <span class="text-xs bg-amber-100 text-amber-800 font-bold px-2.5 py-1 rounded-full uppercase">Uji Pemahaman Mandiri</span>
+                        <h2 class="text-2xl font-bold text-slate-800 mt-1">Evaluasi IPAS Kelas V</h2>
+                        <p class="text-sm text-slate-600">Jawablah pertanyaan berikut dengan cermat berdasarkan materi ekosistem yang telah dipelajari!</p>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 bg-bioGreen-50 p-3 rounded-xl border border-bioGreen-200">
+                        <div class="text-center">
+                            <span class="text-[10px] text-bioGreen-700 uppercase font-bold block">Skor Saat Ini</span>
+                            <span id="quizScoreText" class="text-xl font-bold text-bioGreen-800">0 / 100</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FORM IDENTITAS SISWA (MANDATORY BEFORE QUIZ) -->
+                <div id="studentIdentityForm" class="mt-6 bg-emerald-50/70 p-6 rounded-2xl border-2 border-emerald-200 space-y-4 max-w-xl mx-auto shadow-sm">
+                    <div class="text-center space-y-1">
+                        <h3 class="text-lg font-bold text-bioGreen-800">📋 Form Identitas Siswa</h3>
+                        <p class="text-xs text-slate-600">Isi nama dan kelasmu terlebih dahulu agar hasil kuis tersimpan di database guru!</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div>
+                            <label for="inputNamaSiswa" class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap Siswa <span class="text-rose-500">*</span></label>
+                            <input type="text" id="inputNamaSiswa" placeholder="Contoh: Ahmad Raihan" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-bioGreen-500 focus:outline-none bg-white">
+                        </div>
+
+                        <div>
+                            <label for="inputKelasSiswa" class="block text-xs font-bold text-slate-700 mb-1">Kelas <span class="text-rose-500">*</span></label>
+                            <select id="inputKelasSiswa" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-bioGreen-500 focus:outline-none bg-white">
+                                <option value="Kelas V A">Kelas V A (MIN 2 Kab. Gorontalo)</option>
+                                <option value="Kelas V B">Kelas V B (MIN 2 Kab. Gorontalo)</option>
+                                <option value="Kelas V C">Kelas V C (MIN 2 Kab. Gorontalo)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="startQuizWithIdentity()" class="w-full bg-bioGreen-700 hover:bg-bioGreen-800 text-white font-bold text-sm py-3 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                        🚀 Mulai Mengerjakan Evaluasi
+                    </button>
+                    <p id="identityErrorMsg" class="hidden text-xs text-rose-600 font-semibold text-center mt-1">⚠️ Harap isi nama lengkap sebelum memulai!</p>
+                </div>
+
+                <!-- QUIZ CONTAINER (HIDDEN UNTIL IDENTITY SUBMITTED) -->
+                <div id="quizBox" class="hidden mt-6 space-y-6">
+                    <!-- QUESTION CARD -->
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+                        <div class="flex justify-between items-center text-xs font-bold text-slate-500">
+                            <span id="questionNumText">Soal 1 dari 5</span>
+                            <span id="questionCategory" class="bg-teal-100 text-teal-800 px-2.5 py-0.5 rounded-full">Komponen Ekosistem</span>
+                        </div>
+
+                        <h3 id="questionText" class="text-base md:text-lg font-bold text-slate-800 leading-snug">
+                            Loading pertanyaan...
+                        </h3>
+
+                        <!-- OPTIONS CONTAINER -->
+                        <div id="optionsContainer" class="grid grid-cols-1 gap-3">
+                            <!-- Options rendered by JS -->
+                        </div>
+                    </div>
+
+                    <!-- EXPLANATION & NEXT BUTTON -->
+                    <div id="explanationBox" class="hidden p-4 rounded-2xl border space-y-3">
+                        <div class="flex items-center gap-2">
+                            <span id="explanationIcon" class="text-xl">💡</span>
+                            <h4 id="explanationTitle" class="font-bold text-sm">Pembahasan Edukatif:</h4>
+                        </div>
+                        <p id="explanationText" class="text-xs text-slate-700 leading-relaxed"></p>
+                        <button onclick="nextQuestion()" class="bg-bioGreen-700 hover:bg-bioGreen-800 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow transition float-right">
+                            Soal Berikutnya ➔
+                        </button>
+                    </div>
+                </div>
+
+                <!-- QUIZ COMPLETED FINAL SCORE RESULT (HIDDEN UNTIL FINISHED) -->
+                <div id="quizResultBox" class="hidden text-center py-8 space-y-6">
+                    <div class="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner border-4 border-amber-400">
+                        🏆
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-slate-800">Selamat! Evaluasi Selesai!</h3>
+                        <p class="text-sm text-slate-600 mt-1">Kamu telah menyelesaikan Kuis Ekosistem IPAS Kelas V MIN 2 Kabupaten Gorontalo.</p>
+                        <p class="text-xs text-bioGreen-800 font-semibold mt-1" id="displayStudentInfo"></p>
+                    </div>
+
+                    <div class="inline-block bg-gradient-to-r from-bioGreen-700 to-teal-800 text-white p-6 rounded-2xl shadow-lg space-y-2">
+                        <span class="text-xs uppercase tracking-wider font-semibold text-emerald-200">Nilai Akhir Evaluasi</span>
+                        <div id="finalScoreDisplay" class="text-5xl font-black">100</div>
+                        <p id="finalGradeMessage" class="text-xs text-emerald-100">Luar biasa! Pemahamanmu tentang ekosistem Danau Limboto sangat mantap!</p>
+                    </div>
+
+                    <!-- STATUS PENGIRIMAN KE GOOGLE SHEETS -->
+                    <div id="submissionStatus" class="p-3 bg-slate-100 border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 max-w-md mx-auto">
+                        ⏳ Mengirim data hasil kuis ke Google Sheets Guru...
+                    </div>
+
+                    <div class="flex justify-center gap-3 pt-4">
+                        <button onclick="restartQuiz()" class="bg-bioGreen-700 hover:bg-bioGreen-800 text-white font-bold text-xs px-6 py-3 rounded-xl shadow transition">
+                            🔄 Ulangi Kuis
+                        </button>
+                        <button onclick="switchTab('tab-simulasi')" class="bg-abioBlue-700 hover:bg-abioBlue-800 text-white font-bold text-xs px-6 py-3 rounded-xl shadow transition">
+                            🧪 Kembali ke Lab Simulasi
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 mt-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+            <!-- DEVELOPER FOOTER CARD -->
+            <div class="flex items-center gap-4">
+                <img src="https://iili.io/na4xdSS.jpg" alt="YENI HURSAN, S.Pd.SD" class="w-14 h-14 rounded-full object-cover border-2 border-amber-400 shadow-lg shrink-0" onerror="this.src='https://placehold.co/100x100/15803d/ffffff?text=YH'">
+                <div>
+                    <span class="text-[10px] bg-amber-400/20 text-amber-300 border border-amber-400/30 px-2 py-0.5 rounded font-semibold uppercase tracking-wider">Pengembang Media Pembelajaran</span>
+                    <h4 class="text-sm font-bold text-white mt-0.5">YENI HURSAN, S.Pd.SD</h4>
+                    <p class="text-xs text-slate-400">Guru / Pendidik MIN 2 Kabupaten Gorontalo (Kel. Hepuhulawa, Limboto)</p>
+                </div>
+            </div>
+
+            <div class="text-center md:text-right text-slate-400 space-y-1">
+                <p class="font-bold text-slate-200">MPI IPAS V - Hubungan Komponen Biotik & Abiotik Ekosistem Danau Limboto</p>
+                <p class="text-[11px] text-slate-500">© Kanwil Kementerian Agama Provinsi Gorontalo</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC (100% STANDALONE & SYNC WITH GOOGLE SHEETS) -->
+    <script>
+        /* ==========================================================================
+           1. GOOGLE APPS SCRIPT WEB APP ENDPOINT CONFIGURATION
+           ========================================================================== */
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyx4Yl8jPCG_TfM-MgleTTog9L4jcxC4jFuVKxvSTBtoNgkYOrU-YK3yPj5wSUJBpbDgg/exec";
+
+        let currentStudent = {
+            nama: "",
+            kelas: ""
+        };
+
+        /* ==========================================================================
+           2. GLOBAL STATE & SOUND SYNTHESIZER (WEB AUDIO API)
+           ========================================================================== */
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundStatusText').innerText = soundEnabled ? "Suara: On" : "Suara: Off";
+            document.getElementById('soundIcon').innerText = soundEnabled ? "🔊" : "🔇";
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.15); // E5
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now); // A3
+                    osc.frequency.exponentialRampToValueAtTime(130, now + 0.25);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'click') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, now);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                }
+            } catch(e) {
+                console.log("Audio API setup on user interaction.");
+            }
+        }
+
+        /* ==========================================================================
+           3. TAB SWITCHING LOGIC
+           ========================================================================== */
+        function switchTab(tabId) {
+            playSound('click');
+            ['tab-materi', 'tab-simulasi', 'tab-game', 'tab-kuis'].forEach(id => {
+                const el = document.getElementById(id);
+                const btn = document.getElementById('btn-' + id);
+                if (id === tabId) {
+                    el.classList.remove('hidden');
+                    btn.classList.add('active');
+                    btn.classList.remove('bg-bioGreen-700/50');
+                } else {
+                    el.classList.add('hidden');
+                    btn.classList.remove('active');
+                    btn.classList.add('bg-bioGreen-700/50');
+                }
+            });
+        }
+
+        /* ==========================================================================
+           4. LAB SIMULASI DANAU LIMBOTO (MODUL 2)
+           ========================================================================== */
+        function updateSimulation() {
+            const sunVal = parseInt(document.getElementById('sunlightSlider').value);
+            const pollVal = parseInt(document.getElementById('pollutionSlider').value);
+            const tempVal = parseInt(document.getElementById('tempSlider').value);
+
+            document.getElementById('sunlightVal').innerText = sunVal + '%';
+            document.getElementById('pollutionVal').innerText = pollVal + '%';
+            document.getElementById('tempVal').innerText = tempVal + '°C';
+
+            const container = document.getElementById('lakeCanvasContainer');
+            const plantGroup = document.getElementById('plantGroup');
+            const fishGroup = document.getElementById('fishGroup');
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            const feedback = document.getElementById('inferenceFeedback');
+
+            // Visual brightness & water tint
+            const brightness = 0.5 + (sunVal / 200);
+            container.style.filter = `brightness(${brightness})`;
+
+            if (pollVal > 60) {
+                container.classList.add('lake-polluted');
+            } else {
+                container.classList.remove('lake-polluted');
+            }
+
+            // Render weed/plants based on sunlight and pollution (Eutrophication effect)
+            let plantCount = Math.floor((sunVal / 30) + (pollVal / 20));
+            plantCount = Math.max(2, Math.min(plantCount, 12));
+            
+            let plantHTML = '';
+            for (let i = 0; i < plantCount; i++) {
+                plantHTML += `<div class="text-2xl animate-bounce" style="animation-delay: ${i * 0.2}s">🪷</div>`;
+            }
+            plantGroup.innerHTML = plantHTML;
+
+            // Render fish health based on temperature & pollution
+            let fishCount = 5;
+            let fishState = 'healthy'; // healthy, stressed, endangered
+
+            if (pollVal > 70 || tempVal > 36 || tempVal < 20) {
+                fishCount = 2;
+                fishState = 'endangered';
+            } else if (pollVal > 40 || tempVal > 32 || tempVal < 24) {
+                fishCount = 3;
+                fishState = 'stressed';
+            }
+
+            let fishHTML = '';
+            for (let i = 0; i < fishCount; i++) {
+                if (fishState === 'healthy') {
+                    fishHTML += `<div class="text-3xl transition-all duration-300 transform hover:scale-125 cursor-pointer" title="Ikan Manggabai Sehat">🐟</div>`;
+                } else if (fishState === 'stressed') {
+                    fishHTML += `<div class="text-3xl transition-all duration-300 opacity-80" title="Ikan Manggabai Lemah">🐠</div>`;
+                } else {
+                    fishHTML += `<div class="text-3xl transition-all duration-300 rotate-180 opacity-50" title="Ikan Kekurangan Oksigen">💀</div>`;
+                }
+            }
+            fishGroup.innerHTML = fishHTML;
+
+            // Educational inference text update
+            if (pollVal > 60 && plantCount > 7) {
+                statusDot.className = "w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping";
+                statusText.innerText = "Terjadi Eutrofikasi (Danau Tercemar & Menutup Cahaya)";
+                feedback.innerHTML = `<strong class="text-rose-700">Pencemaran Limbah Tinggi!</strong> Pertumbuhan eceng gondok tak terkendali menutupi permukaan Danau Limboto. Cahaya matahari terhalang masuk ke dalam air, sehingga kadar Oksigen terlarut berkurang mendadak. Akibatnya, ikan Manggabai & organisme air mati terancam punah!`;
+            } else if (tempVal > 35) {
+                statusDot.className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping";
+                statusText.innerText = "Suhu Air Terlalu Panas";
+                feedback.innerHTML = `<strong class="text-amber-800">Suhu Ekstrem!</strong> Suhu air danau mencapai ${tempVal}°C. Metabolisme ikan terganggu karena suhu abiotik melebihi batas toleransi fisiologis makhluk hidup.`;
+            } else {
+                statusDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping";
+                statusText.innerText = "Ekosistem Seimbang & Subur";
+                feedback.innerHTML = `Interaksi komponen abiotik (Suhu ${tempVal}°C, Cahaya ${sunVal}%) dan biotik berjalan seimbang. Tumbuhan air berfotosintesis menghasilkan O2 segar bagi kehidupan ikan Manggabai Limboto.`;
+            }
+        }
+
+        function resetSimulation() {
+            playSound('click');
+            document.getElementById('sunlightSlider').value = 70;
+            document.getElementById('pollutionSlider').value = 20;
+            document.getElementById('tempSlider').value = 28;
+            updateSimulation();
+        }
+
+        /* ==========================================================================
+           5. GAME INTERAKTIF DRAG & DROP & RANTAI MAKANAN (MODUL 3)
+           ========================================================================== */
+        const dragItemsData = [
+            { id: 1, name: "Ikan Manggabai", type: "biotik", icon: "🐟" },
+            { id: 2, name: "Cahaya Matahari", type: "abiotik", icon: "☀️" },
+            { id: 3, name: "Eceng Gondok", type: "biotik", icon: "🌿" },
+            { id: 4, name: "Air Danau", type: "abiotik", icon: "💧" },
+            { id: 5, name: "Burung Kuntul", type: "biotik", icon: "🦅" },
+            { id: 6, name: "Tanah Lumpu", type: "abiotik", icon: "🪴" },
+            { id: 7, name: "Bakteri Pengurai", type: "biotik", icon: "🦠" },
+            { id: 8, name: "Suhu Udara", type: "abiotik", icon: "🌡️️" }
+        ];
+
+        function initDragGame() {
+            const pool = document.getElementById('draggableItemsPool');
+            const contBiotik = document.getElementById('containerBiotik');
+            const contAbiotik = document.getElementById('containerAbiotik');
+            pool.innerHTML = '';
+            contBiotik.innerHTML = '';
+            contAbiotik.innerHTML = '';
+
+            // Shuffle items
+            const shuffled = [...dragItemsData].sort(() => Math.random() - 0.5);
+
+            shuffled.forEach(item => {
+                const btn = document.createElement('button');
+                btn.id = 'item-' + item.id;
+                btn.className = "draggable-item bg-white px-3 py-2 rounded-xl shadow-sm border border-slate-300 text-xs font-semibold flex items-center gap-1.5 hover:border-bioGreen-500 hover:shadow transition";
+                btn.innerHTML = `<span>${item.icon}</span> <span>${item.name}</span>`;
+                btn.onclick = () => moveItemInteractive(item, btn);
+                pool.appendChild(btn);
+            });
+        }
+
+        function moveItemInteractive(item, btnEl) {
+            playSound('click');
+            const pool = document.getElementById('draggableItemsPool');
+            const contBiotik = document.getElementById('containerBiotik');
+            const contAbiotik = document.getElementById('containerAbiotik');
+            const feedback = document.getElementById('dragGameFeedback');
+
+            if (btnEl.parentElement === pool) {
+                if (item.type === 'biotik') {
+                    contBiotik.appendChild(btnEl);
+                    btnEl.className = "draggable-item bg-bioGreen-100 text-bioGreen-900 border border-bioGreen-300 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1 animate-pulse";
+                } else {
+                    contAbiotik.appendChild(btnEl);
+                    btnEl.className = "draggable-item bg-abioBlue-100 text-abioBlue-900 border border-abioBlue-300 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1 animate-pulse";
+                }
+                setTimeout(() => btnEl.classList.remove('animate-pulse'), 500);
+            } else {
+                pool.appendChild(btnEl);
+                btnEl.className = "draggable-item bg-white px-3 py-2 rounded-xl shadow-sm border border-slate-300 text-xs font-semibold flex items-center gap-1.5 hover:border-bioGreen-500 transition";
+            }
+
+            if (pool.children.length === 0) {
+                playSound('correct');
+                feedback.classList.remove('hidden');
+                feedback.className = "p-3 rounded-xl text-xs font-semibold bg-bioGreen-100 text-bioGreen-800 border border-bioGreen-300 text-center";
+                feedback.innerHTML = "🎉 Hebat sekali! Semua komponen biotik dan abiotik berhasil dikelompokkan dengan tepat!";
+                updateBadge("Ahli Komponen Limboto");
+            }
+        }
+
+        // FOOD CHAIN SUB-GAME DATA
+        const foodChainCorrectOrder = [
+            { id: 'p', name: 'Fitoplankton / Alga', role: 'Produsen', icon: '🌿' },
+            { id: 'k1', name: 'Ikan Kecil', role: 'Konsumen I', icon: '🐟' },
+            { id: 'k2', name: 'Ikan Manggabai', role: 'Konsumen II', icon: '🐠' },
+            { id: 'k3', name: 'Burung Elang Rawa', role: 'Konsumen III', icon: '🦅' },
+            { id: 'd', name: 'Bakteri Pengurai', role: 'Dekomposer', icon: '🦠' }
+        ];
+
+        let userChain = [];
+
+        function initFoodChainGame() {
+            const optionsBox = document.getElementById('chainOptions');
+            optionsBox.innerHTML = '';
+            userChain = [];
+            renderFoodChainSlots();
+
+            const shuffled = [...foodChainCorrectOrder].sort(() => Math.random() - 0.5);
+
+            shuffled.forEach(item => {
+                const card = document.createElement('button');
+                card.id = 'chain-opt-' + item.id;
+                card.className = "bg-white border-2 border-slate-200 hover:border-bioGreen-500 p-3 rounded-xl shadow-sm flex flex-col items-center gap-1 transition text-xs font-bold w-28";
+                card.innerHTML = `<span class="text-2xl">${item.icon}</span><span>${item.name}</span><span class="text-[10px] text-slate-400 font-normal">${item.role}</span>`;
+                card.onclick = () => addToFoodChain(item, card);
+                optionsBox.appendChild(card);
+            });
+        }
+
+        function addToFoodChain(item, cardEl) {
+            playSound('click');
+            if (userChain.find(x => x.id === item.id)) return;
+
+            userChain.push(item);
+            cardEl.classList.add('opacity-40', 'pointer-events-none');
+            renderFoodChainSlots();
+        }
+
+        function renderFoodChainSlots() {
+            const slotsBox = document.getElementById('foodChainSlots');
+            if (userChain.length === 0) {
+                slotsBox.innerHTML = `<div class="text-xs text-slate-400 italic">Klik pilihan di bawah sesuai urutan aliran energi...</div>`;
+                return;
+            }
+
+            let html = '';
+            userChain.forEach((item, index) => {
+                html += `
+                    <div class="bg-bioGreen-700 text-white px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow">
+                        <span>${item.icon}</span>
+                        <span>${item.name}</span>
+                    </div>
+                `;
+                if (index < userChain.length - 1) {
+                    html += `<span class="text-amber-500 font-extrabold text-sm">➔</span>`;
+                }
+            });
+            slotsBox.innerHTML = html;
+        }
+
+        function checkFoodChain() {
+            const feedback = document.getElementById('chainFeedback');
+            feedback.classList.remove('hidden');
+
+            if (userChain.length !== foodChainCorrectOrder.length) {
+                playSound('wrong');
+                feedback.className = "p-3 rounded-xl text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-300 text-center";
+                feedback.innerHTML = "⚠️ Pilih kelima organisme di atas terlebih dahulu!";
+                return;
+            }
+
+            let isCorrect = true;
+            for (let i = 0; i < userChain.length; i++) {
+                if (userChain[i].id !== foodChainCorrectOrder[i].id) {
+                    isCorrect = false;
+                    break;
+                }
+            }
+
+            if (isCorrect) {
+                playSound('correct');
+                feedback.className = "p-3 rounded-xl text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300 text-center";
+                feedback.innerHTML = "🎉 Luar Biasa! Urutan Rantai Makanan Danau Limboto Sempurna! Energi mengalir dengan benar dari Produsen hingga Pengurai.";
+                updateBadge("Penyusun Rantai Danau");
+            } else {
+                playSound('wrong');
+                feedback.className = "p-3 rounded-xl text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300 text-center";
+                feedback.innerHTML = "❌ Urutan belum tepat. Ingat! Urutan selalu dimulai dari **Produsen (Tumbuhan)** ➔ **Konsumen I** ➔ **Konsumen II** ➔ **Konsumen Puncak** ➔ **Pengurai**. Coba lagi ya!";
+            }
+        }
+
+        function resetFoodChain() {
+            playSound('click');
+            document.getElementById('chainFeedback').classList.add('hidden');
+            initFoodChainGame();
+        }
+
+        /* ==========================================================================
+           6. EVALUASI KUIS INTERAKTIF & INTEGRASI DATABASE GOOGLE SHEETS (MODUL 4)
+           ========================================================================== */
+        let quizData = [
+            {
+                question: "Di kawasan Danau Limboto dekat MIN 2 Kabupaten Gorontalo, manakah di antara pilihan berikut yang termasuk dalam komponen ABIOTIK?",
+                options: [
+                    "Ikan Manggabai dan eceng gondok",
+                    "Cahaya matahari, air danau, dan tanah lumpur",
+                    "Burung kuntul rawa dan bakteri pengurai",
+                    "Ulat daun dan katak hijau"
+                ],
+                answer: 1,
+                category: "Komponen Ekosistem",
+                explanation: "Komponen abiotik adalah benda tak hidup seperti cahaya matahari, air, tanah, suhu, dan udara yang mendukung kehidupan makhluk hidup."
+            },
+            {
+                question: "Eceng gondok di Danau Limboto dapat membuat makanannya sendiri melalui bantuan cahaya matahari. Dalam rantai makanan, eceng gondok berperan sebagai...",
+                options: [
+                    "Konsumen Primer",
+                    "Dekomposer",
+                    "Produsen",
+                    "Konsumen Sekunder"
+                ],
+                answer: 2,
+                category: "Peran Biotik",
+                explanation: "Produsen adalah organisme autotrof (seperti tumbuhan/alga) yang mampu membuat makanan sendiri lewat proses fotosintesis."
+            },
+            {
+                question: "Apabila air Danau Limboto mengalami pencemaran berat dan pendangkalan (eutrofikasi) akibat limbah, dampak abiotik ini terhadap ikan Manggabai adalah...",
+                options: [
+                    "Populasi ikan bertambah makin cepat",
+                    "Ikan Manggabai kesulitan bernapas karena Oksigen terlarut berkurang",
+                    "Ikan Manggabai berubah menjadi produsen",
+                    "Air danau menjadi lebih dingin dan jernih"
+                ],
+                answer: 1,
+                category: "Interaksi Sebab-Akibat",
+                explanation: "Pencemaran memicu gulma menutupi permukaan danau, merusak hubungan abiotik-biotik sehingga kadar oksigen terlarut dalam air turun dan mengancam kehidupan ikan."
+            },
+            {
+                question: "Hubungan antara kupu-kupu dengan bunga eceng gondok di danau, di mana kupu-kupu mendapat nektar dan bunga terbantu penyerbukannya disebut...",
+                options: [
+                    "Simbiosis Parasitisme",
+                    "Simbiosis Komensalisme",
+                    "Simbiosis Mutualisme",
+                    "Predasi"
+                ],
+                answer: 2,
+                category: "Interaksi Interspesifik",
+                explanation: "Simbiosis mutualisme adalah hubungan yang saling menguntungkan kedua belah pihak."
+            },
+            {
+                question: "Organisme mikro seperti bakteri dan jamur yang menguraikan bangkai ikan atau tumbuhan mati di dasar Danau Limboto menjadi nutrisi tanah disebut...",
+                options: [
+                    "Konsumen Tersier",
+                    "Dekomposer (Pengurai)",
+                    "Herbivora",
+                    "Predator Utama"
+                ],
+                answer: 1,
+                category: "Siklus Nutrisi",
+                explanation: "Dekomposer bertugas menguraikan sisa-sisa bahan organik makhluk hidup yang telah mati menjadi zat hara penyubur tanah dan air."
+            }
+        ];
+
+        let currentQuestionIdx = 0;
+        let score = 0;
+        let answered = false;
+        let userAnswersRecord = [];
+
+        // AMBIL SOAL DARI GOOGLE SHEETS
+        async function fetchQuestionsFromGAS() {
+            try {
+                const res = await fetch(GAS_API_URL + "?action=getQuestions");
+                const data = await res.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    quizData = data.map(item => ({
+                        question: item.question,
+                        options: item.options,
+                        answer: item.answer,
+                        category: item.category || "Ekosistem Limboto",
+                        explanation: item.explanation || "Pembahasan materi ekosistem Danau Limboto."
+                    }));
+                    console.log("Soal berhasil dimuat dari Google Sheets Spreadsheet!");
+                }
+            } catch (err) {
+                console.log("Menggunakan bank soal offline default:", err);
+            }
+        }
+
+        function startQuizWithIdentity() {
+            const nama = document.getElementById('inputNamaSiswa').value.trim();
+            const kelas = document.getElementById('inputKelasSiswa').value;
+            const errEl = document.getElementById('identityErrorMsg');
+
+            if (!nama) {
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            errEl.classList.add('hidden');
+            currentStudent.nama = nama;
+            currentStudent.kelas = kelas;
+            playSound('click');
+
+            document.getElementById('studentIdentityForm').classList.add('hidden');
+            document.getElementById('quizBox').classList.remove('hidden');
+            
+            score = 0;
+            currentQuestionIdx = 0;
+            userAnswersRecord = [];
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            answered = false;
+            const q = quizData[currentQuestionIdx];
+
+            document.getElementById('questionNumText').innerText = `Soal ${currentQuestionIdx + 1} dari ${quizData.length}`;
+            document.getElementById('questionCategory').innerText = q.category;
+            document.getElementById('questionText').innerText = q.question;
+            document.getElementById('explanationBox').classList.add('hidden');
+
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-bioGreen-500 hover:bg-bioGreen-50/50 transition font-medium text-xs md:text-sm text-slate-700 flex items-center justify-between";
+                btn.innerHTML = `<span>${String.fromCharCode(65 + idx)}. ${opt}</span> <span class="opt-icon"></span>`;
+                btn.onclick = () => selectAnswer(idx, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(optIdx, btnEl) {
+            if (answered) return;
+            answered = true;
+
+            const q = quizData[currentQuestionIdx];
+            const container = document.getElementById('optionsContainer');
+            const buttons = container.children;
+            const explanationBox = document.getElementById('explanationBox');
+            const explanationTitle = document.getElementById('explanationTitle');
+            const explanationText = document.getElementById('explanationText');
+
+            const isCorrect = (optIdx === q.answer);
+
+            userAnswersRecord.push({
+                soal: currentQuestionIdx + 1,
+                pilihan: String.fromCharCode(65 + optIdx),
+                isBenar: isCorrect
+            });
+
+            if (isCorrect) {
+                playSound('correct');
+                score += (100 / quizData.length);
+                document.getElementById('quizScoreText').innerText = `${Math.round(score)} / 100`;
+
+                btnEl.className = "w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 font-bold text-xs md:text-sm flex items-center justify-between";
+                btnEl.querySelector('.opt-icon').innerText = "✅";
+
+                explanationBox.className = "p-4 rounded-2xl border border-emerald-200 bg-emerald-50 space-y-2";
+                explanationTitle.innerText = "Jawaban Tepat Sekali!";
+                explanationTitle.className = "font-bold text-sm text-emerald-800";
+            } else {
+                playSound('wrong');
+                btnEl.className = "w-full text-left p-4 rounded-xl border-2 border-rose-500 bg-rose-50 text-rose-900 font-bold text-xs md:text-sm flex items-center justify-between";
+                btnEl.querySelector('.opt-icon').innerText = "❌";
+
+                buttons[q.answer].className = "w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 font-bold text-xs md:text-sm flex items-center justify-between";
+                buttons[q.answer].querySelector('.opt-icon').innerText = "💡 Jawaban Benar";
+
+                explanationBox.className = "p-4 rounded-2xl border border-rose-200 bg-rose-50 space-y-2";
+                explanationTitle.innerText = "Belum Tepat, Mari Pelajari:";
+                explanationTitle.className = "font-bold text-sm text-rose-800";
+            }
+
+            explanationText.innerText = q.explanation;
+            explanationBox.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            playSound('click');
+            currentQuestionIdx++;
+            if (currentQuestionIdx < quizData.length) {
+                renderQuestion();
+            } else {
+                showQuizResults();
+            }
+        }
+
+        async function showQuizResults() {
+            document.getElementById('quizBox').classList.add('hidden');
+            const resultBox = document.getElementById('quizResultBox');
+            resultBox.classList.remove('hidden');
+
+            const finalScore = Math.round(score);
+            document.getElementById('finalScoreDisplay').innerText = finalScore;
+            document.getElementById('displayStudentInfo').innerText = `Siswa: ${currentStudent.nama} (${currentStudent.kelas})`;
+
+            const msg = document.getElementById('finalGradeMessage');
+            if (finalScore >= 80) {
+                playSound('correct');
+                msg.innerText = "Luar biasa! Kamu sangat memahami hubungan interaksi komponen ekosistem Danau Limboto!";
+                updateBadge("Pahlawan Ekosistem Danau");
+            } else if (finalScore >= 60) {
+                msg.innerText = "Bagus! Kamu sudah memahami konsep dasar ekosistem. Tingkatkan lagi ya!";
+                updateBadge("Penjelajah Limboto");
+            } else {
+                msg.innerText = "Tetap semangat! Pelajari kembali materi modul 1 & lakukan simulasi lab!";
+            }
+
+            // SIMPAN HASIL KE GOOGLE SHEETS SPREADSHEET (VIA GOOGLE APPS SCRIPT)
+            await submitQuizResultToGAS(finalScore);
+        }
+
+        async function submitQuizResultToGAS(finalScore) {
+            const statusEl = document.getElementById('submissionStatus');
+            statusEl.className = "p-3 bg-amber-50 border border-amber-300 text-amber-900 rounded-xl text-xs font-semibold max-w-md mx-auto";
+            statusEl.innerHTML = "⏳ Mengirim hasil kuis ke Google Sheets Guru...";
+
+            const jumlahBenar = userAnswersRecord.filter(x => x.isBenar).length;
+            const jumlahSalah = userAnswersRecord.length - jumlahBenar;
+            const detailStr = userAnswersRecord.map(x => `S${x.soal}:${x.pilihan}(${x.isBenar ? 'Benar' : 'Salah'})`).join(', ');
+
+            try {
+                await fetch(GAS_API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nama: currentStudent.nama,
+                        kelas: currentStudent.kelas,
+                        skor: finalScore,
+                        jumlahBenar: jumlahBenar,
+                        jumlahSalah: jumlahSalah,
+                        detailJawaban: detailStr
+                    })
+                });
+
+                statusEl.className = "p-3 bg-emerald-100 border border-emerald-300 text-emerald-900 rounded-xl text-xs font-semibold max-w-md mx-auto";
+                statusEl.innerHTML = "✅ Hasil kuis berhasil dikirim dan tersimpan di Spreadsheet Guru!";
+            } catch (err) {
+                console.error("Gagal mengirim hasil ke Google Sheets:", err);
+                statusEl.className = "p-3 bg-rose-100 border border-rose-300 text-rose-900 rounded-xl text-xs font-semibold max-w-md mx-auto";
+                statusEl.innerHTML = "⚠️️ Koneksi lambat, data dikirim secara lokal.";
+            }
+        }
+
+        function restartQuiz() {
+            playSound('click');
+            score = 0;
+            currentQuestionIdx = 0;
+            document.getElementById('quizScoreText').innerText = "0 / 100";
+            document.getElementById('quizResultBox').classList.add('hidden');
+            document.getElementById('studentIdentityForm').classList.remove('hidden');
+        }
+
+        function updateBadge(newBadge) {
+            document.getElementById('badgeDisplay').innerText = newBadge;
+        }
+
+        /* ==========================================================================
+           7. INITIALIZATION ON WINDOW LOAD
+           ========================================================================== */
+        window.onload = function() {
+            updateSimulation();
+            initDragGame();
+            initFoodChainGame();
+            fetchQuestionsFromGAS();
+        };
+    </script>
+</body>
+</html>
